@@ -1,0 +1,760 @@
+{
+  "status": [
+    {
+      "name": "defaults to simulated",
+      "env": {},
+      "expect": {
+        "mode": "simulated",
+        "activeRail": "simulated_header",
+        "ready": false,
+        "liveSettlementAllowed": false,
+        "serverPrivateKeyRequired": false,
+        "networkId": "eip155:84532",
+        "networkMainnet": false,
+        "errors": []
+      }
+    },
+    {
+      "name": "base sepolia configured",
+      "env": {
+        "AOX_PAYMENT_MODE": "x402_testnet",
+        "AOX_X402_NETWORK": "eip155:84532",
+        "AOX_X402_PAY_TO": "0x1111111111111111111111111111111111111111",
+        "AOX_X402_FACILITATOR_URL": "https://x402.org/facilitator"
+      },
+      "expect": {
+        "mode": "x402_testnet",
+        "activeRail": "official_x402_testnet",
+        "ready": true,
+        "liveSettlementAllowed": false,
+        "payToRedacted": "0x1111...1111",
+        "errors": []
+      }
+    },
+    {
+      "name": "mainnet blocked",
+      "env": {
+        "AOX_PAYMENT_MODE": "x402_testnet",
+        "AOX_X402_NETWORK": "eip155:8453",
+        "AOX_X402_PAY_TO": "0x1111111111111111111111111111111111111111"
+      },
+      "expect": {
+        "ready": false,
+        "activeRail": "x402_testnet_config_required",
+        "errors": [
+          "unsupported_network:eip155:8453",
+          "mainnet_network_blocked:eip155:8453"
+        ]
+      }
+    },
+    {
+      "name": "solana mainnet blocked",
+      "env": {
+        "AOX_PAYMENT_MODE": "x402_testnet",
+        "AOX_X402_NETWORK": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+        "AOX_X402_PAY_TO": "0x1111111111111111111111111111111111111111"
+      },
+      "expect": {
+        "ready": false,
+        "errorsContain": [
+          "mainnet_network_blocked:solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp"
+        ]
+      }
+    },
+    {
+      "name": "stellar mainnet blocked",
+      "env": {
+        "AOX_PAYMENT_MODE": "x402_testnet",
+        "AOX_X402_NETWORK": "stellar:pubnet",
+        "AOX_X402_PAY_TO": "0x1111111111111111111111111111111111111111"
+      },
+      "expect": {
+        "ready": false,
+        "errorsContain": [
+          "mainnet_network_blocked:stellar:pubnet"
+        ]
+      }
+    },
+    {
+      "name": "private key refused",
+      "env": {
+        "AOX_PAYMENT_MODE": "x402_testnet",
+        "AOX_X402_NETWORK": "eip155:84532",
+        "AOX_X402_PAY_TO": "0x1111111111111111111111111111111111111111",
+        "EVM_PRIVATE_KEY": "not-a-key"
+      },
+      "expect": {
+        "ready": false,
+        "errorsContain": [
+          "private_key_refused"
+        ]
+      },
+      "absent": "not-a-key"
+    },
+    {
+      "name": "pattern key refused",
+      "env": {
+        "AOX_PAYMENT_MODE": "x402_testnet",
+        "AOX_X402_NETWORK": "eip155:84532",
+        "AOX_X402_PAY_TO": "0x1111111111111111111111111111111111111111",
+        "WALLET_SECRET": "1111111111111111111111111111111111111111111111111111111111111111"
+      },
+      "expect": {
+        "ready": false,
+        "errorsContain": [
+          "private_key_refused"
+        ]
+      },
+      "absent": "1111111111111111111111111111111111111111111111111111111111111111"
+    },
+    {
+      "name": "prefixed pattern key refused",
+      "env": {
+        "AOX_PAYMENT_MODE": "x402_testnet",
+        "AOX_X402_NETWORK": "eip155:84532",
+        "AOX_X402_PAY_TO": "0x1111111111111111111111111111111111111111",
+        "WALLET_SECRET": "0x2222222222222222222222222222222222222222222222222222222222222222"
+      },
+      "expect": {
+        "ready": false,
+        "errorsContain": [
+          "private_key_refused"
+        ]
+      },
+      "absent": "2222222222222222222222222222222222222222222222222222222222222222"
+    },
+    {
+      "name": "http facilitator rejected",
+      "env": {
+        "AOX_PAYMENT_MODE": "x402_testnet",
+        "AOX_X402_NETWORK": "eip155:84532",
+        "AOX_X402_PAY_TO": "0x1111111111111111111111111111111111111111",
+        "AOX_X402_FACILITATOR_URL": "http://x402.org/facilitator"
+      },
+      "expect": {
+        "ready": false,
+        "errorsContain": [
+          "facilitator_url_must_be_https"
+        ]
+      }
+    },
+    {
+      "name": "non allowlisted facilitator",
+      "env": {
+        "AOX_PAYMENT_MODE": "x402_testnet",
+        "AOX_X402_NETWORK": "eip155:84532",
+        "AOX_X402_PAY_TO": "0x1111111111111111111111111111111111111111",
+        "AOX_X402_FACILITATOR_URL": "https://example.com/facilitator"
+      },
+      "expect": {
+        "ready": false,
+        "errorsContain": [
+          "facilitator_not_allowlisted"
+        ]
+      }
+    },
+    {
+      "name": "facilitator userinfo rejected",
+      "env": {
+        "AOX_PAYMENT_MODE": "x402_testnet",
+        "AOX_X402_NETWORK": "eip155:84532",
+        "AOX_X402_PAY_TO": "0x1111111111111111111111111111111111111111",
+        "AOX_X402_FACILITATOR_URL": "https://user:pass@x402.org/facilitator"
+      },
+      "expect": {
+        "ready": false,
+        "errorsContain": [
+          "facilitator_not_allowlisted"
+        ]
+      },
+      "absent": "user:pass"
+    },
+    {
+      "name": "missing payTo",
+      "env": {
+        "AOX_PAYMENT_MODE": "x402_testnet"
+      },
+      "expect": {
+        "ready": false,
+        "errorsContain": [
+          "missing_AOX_X402_PAY_TO"
+        ]
+      }
+    },
+    {
+      "name": "aoe alias still blocked on mainnet",
+      "env": {
+        "AOE_PAYMENT_MODE": "x402_testnet",
+        "AOE_X402_NETWORK": "eip155:8453",
+        "AOE_X402_PAY_TO": "0x1111111111111111111111111111111111111111"
+      },
+      "expect": {
+        "ready": false,
+        "errorsContain": [
+          "mainnet_network_blocked:eip155:8453"
+        ]
+      }
+    }
+  ],
+  "release": [
+    {
+      "name": "ok simulated",
+      "input": {
+        "verdict": {
+          "format": "aox-verdict-receipt@1",
+          "provenance": "synthetic",
+          "contract": "text.upper@1",
+          "task_id": "task-ok",
+          "verdict": "OK",
+          "evidence": "present",
+          "reasons": [],
+          "hash": "00a21508c0949fec4a10ffedea5e5d19433d1b208117c13408b960f6b5350dc0"
+        },
+        "amount": "1000000",
+        "network": "eip155:84532",
+        "mode": "simulated",
+        "maxUsd": "1.00"
+      },
+      "expect": {
+        "decision": "RELEASE",
+        "reason": "ok",
+        "liveSettlementAllowed": false,
+        "settled": false,
+        "simulated": true,
+        "verdict": "OK",
+        "receiptHash": "00a21508c0949fec4a10ffedea5e5d19433d1b208117c13408b960f6b5350dc0",
+        "taskId": "task-ok"
+      }
+    },
+    {
+      "name": "bare ok requires receipt",
+      "input": {
+        "verdict": "OK",
+        "amount": "1000000",
+        "network": "eip155:84532",
+        "mode": "simulated",
+        "maxUsd": "1.00"
+      },
+      "expect": {
+        "decision": "DENY",
+        "reason": "receipt_required",
+        "settled": false,
+        "verdict": null
+      }
+    },
+    {
+      "name": "failed string requires receipt",
+      "input": {
+        "verdict": "FAILED",
+        "amount": "1000000",
+        "network": "eip155:84532",
+        "mode": "simulated",
+        "maxUsd": "1.00"
+      },
+      "expect": {
+        "decision": "DENY",
+        "reason": "receipt_required",
+        "settled": false
+      }
+    },
+    {
+      "name": "unknown string requires receipt",
+      "input": {
+        "verdict": "UNKNOWN",
+        "amount": "1000000",
+        "network": "eip155:84532",
+        "mode": "simulated",
+        "maxUsd": "1.00"
+      },
+      "expect": {
+        "decision": "DENY",
+        "reason": "receipt_required",
+        "settled": false
+      }
+    },
+    {
+      "name": "failed receipt blocks",
+      "input": {
+        "verdict": {
+          "format": "aox-verdict-receipt@1",
+          "provenance": "synthetic",
+          "contract": "text.upper@1",
+          "task_id": "task-failed",
+          "verdict": "FAILED",
+          "evidence": "present",
+          "reasons": [
+            "nope"
+          ],
+          "hash": "126cdcf20b6250f654cc94c20d88f912848d59c424a395cdb154d84c208f90be"
+        },
+        "amount": "1000000",
+        "network": "eip155:84532",
+        "mode": "simulated",
+        "maxUsd": "1.00"
+      },
+      "expect": {
+        "decision": "DENY",
+        "reason": "verdict_not_ok",
+        "settled": false,
+        "verdict": "FAILED",
+        "taskId": "task-failed"
+      }
+    },
+    {
+      "name": "unknown receipt blocks",
+      "input": {
+        "verdict": {
+          "format": "aox-verdict-receipt@1",
+          "provenance": "synthetic",
+          "contract": "text.upper@1",
+          "task_id": "task-unknown",
+          "verdict": "UNKNOWN",
+          "evidence": "missing",
+          "reasons": [],
+          "hash": "8194501299ae7132109f6254be9a360aca72880f56e5a3774fa0d7f719d6e989"
+        },
+        "amount": "1000000",
+        "network": "eip155:84532",
+        "mode": "simulated",
+        "maxUsd": "1.00"
+      },
+      "expect": {
+        "decision": "DENY",
+        "reason": "verdict_not_ok",
+        "settled": false,
+        "verdict": "UNKNOWN",
+        "taskId": "task-unknown"
+      }
+    },
+    {
+      "name": "tampered receipt rejected",
+      "input": {
+        "verdict": {
+          "format": "aox-verdict-receipt@1",
+          "provenance": "synthetic",
+          "contract": "text.upper@1",
+          "task_id": "task-ok",
+          "verdict": "OK",
+          "evidence": "present",
+          "reasons": [],
+          "hash": "0000000000000000000000000000000000000000000000000000000000000000"
+        },
+        "amount": "1",
+        "network": "eip155:84532",
+        "mode": "simulated",
+        "maxUsd": "1.00"
+      },
+      "expect": {
+        "decision": "DENY",
+        "reason": "receipt_rejected",
+        "settled": false
+      }
+    },
+    {
+      "name": "mainnet blocks even ok",
+      "input": {
+        "verdict": "OK",
+        "amount": "1",
+        "network": "eip155:8453",
+        "mode": "simulated",
+        "maxUsd": "1.00"
+      },
+      "expect": {
+        "decision": "DENY",
+        "reason": "mainnet_network_blocked",
+        "settled": false,
+        "liveSettlementAllowed": false
+      }
+    },
+    {
+      "name": "other network blocks",
+      "input": {
+        "verdict": "OK",
+        "amount": "1",
+        "network": "eip155:1",
+        "mode": "simulated",
+        "maxUsd": "1.00"
+      },
+      "expect": {
+        "decision": "DENY",
+        "reason": "unsupported_network",
+        "settled": false
+      }
+    },
+    {
+      "name": "empty network blocks",
+      "input": {
+        "verdict": "OK",
+        "amount": "1",
+        "network": "",
+        "mode": "simulated",
+        "maxUsd": "1.00"
+      },
+      "expect": {
+        "decision": "DENY",
+        "reason": "unsupported_network",
+        "settled": false
+      }
+    },
+    {
+      "name": "zero amount blocks",
+      "input": {
+        "verdict": {
+          "format": "aox-verdict-receipt@1",
+          "provenance": "synthetic",
+          "contract": "text.upper@1",
+          "task_id": "task-ok-zero",
+          "verdict": "OK",
+          "evidence": "present",
+          "reasons": [],
+          "hash": "1b32093197d2489845f18cdd0f4cb82c38385ebc536a56c6165fb826abcc4199"
+        },
+        "amount": "0",
+        "network": "eip155:84532",
+        "mode": "simulated",
+        "maxUsd": "1.00"
+      },
+      "expect": {
+        "decision": "DENY",
+        "reason": "amount_not_positive",
+        "settled": false
+      }
+    },
+    {
+      "name": "negative amount blocks",
+      "input": {
+        "verdict": {
+          "format": "aox-verdict-receipt@1",
+          "provenance": "synthetic",
+          "contract": "text.upper@1",
+          "task_id": "task-ok-neg",
+          "verdict": "OK",
+          "evidence": "present",
+          "reasons": [],
+          "hash": "1a0e571db2970bc49c2ace6b67603592d8c34e8e8361f7c643b4b925d6ceca4c"
+        },
+        "amount": "-1",
+        "network": "eip155:84532",
+        "mode": "simulated",
+        "maxUsd": "1.00"
+      },
+      "expect": {
+        "decision": "DENY",
+        "reason": "amount_not_positive",
+        "settled": false
+      }
+    },
+    {
+      "name": "over cap blocks",
+      "input": {
+        "verdict": {
+          "format": "aox-verdict-receipt@1",
+          "provenance": "synthetic",
+          "contract": "text.upper@1",
+          "task_id": "task-ok-over",
+          "verdict": "OK",
+          "evidence": "present",
+          "reasons": [],
+          "hash": "515910859b407e67b8f4c6beef9e17ccf9347af81ea1f3fc16d5538fa86d31fd"
+        },
+        "amount": "1000001",
+        "network": "eip155:84532",
+        "mode": "simulated",
+        "maxUsd": "1.00"
+      },
+      "expect": {
+        "decision": "DENY",
+        "reason": "spend_cap",
+        "settled": false
+      }
+    },
+    {
+      "name": "cap request above 5 is clamped",
+      "input": {
+        "verdict": {
+          "format": "aox-verdict-receipt@1",
+          "provenance": "synthetic",
+          "contract": "text.upper@1",
+          "task_id": "task-ok-clamp",
+          "verdict": "OK",
+          "evidence": "present",
+          "reasons": [],
+          "hash": "8d53572a318d7a0025f7bf4c703f44940e08a45ecbbf8e833b97b94f5efe1b45"
+        },
+        "amount": "5000000",
+        "network": "eip155:84532",
+        "mode": "simulated",
+        "maxUsd": "100"
+      },
+      "expect": {
+        "decision": "RELEASE",
+        "reason": "ok",
+        "appliedMaxUsd": "5.000000",
+        "settled": false,
+        "receiptHash": "8d53572a318d7a0025f7bf4c703f44940e08a45ecbbf8e833b97b94f5efe1b45"
+      }
+    },
+    {
+      "name": "above clamped cap blocks",
+      "input": {
+        "verdict": {
+          "format": "aox-verdict-receipt@1",
+          "provenance": "synthetic",
+          "contract": "text.upper@1",
+          "task_id": "task-ok-above",
+          "verdict": "OK",
+          "evidence": "present",
+          "reasons": [],
+          "hash": "f73b8d715ee25e9e5db251c106dc1e45f4cab607efa78400d43ec2f5fe1d4198"
+        },
+        "amount": "5000001",
+        "network": "eip155:84532",
+        "mode": "simulated",
+        "maxUsd": "100"
+      },
+      "expect": {
+        "decision": "DENY",
+        "reason": "spend_cap",
+        "settled": false
+      }
+    },
+    {
+      "name": "non digit amount blocks",
+      "input": {
+        "verdict": {
+          "format": "aox-verdict-receipt@1",
+          "provenance": "synthetic",
+          "contract": "text.upper@1",
+          "task_id": "task-ok",
+          "verdict": "OK",
+          "evidence": "present",
+          "reasons": [],
+          "hash": "00a21508c0949fec4a10ffedea5e5d19433d1b208117c13408b960f6b5350dc0"
+        },
+        "amount": "1.00",
+        "network": "eip155:84532",
+        "mode": "simulated",
+        "maxUsd": "1.00"
+      },
+      "expect": {
+        "decision": "DENY",
+        "reason": "malformed_amount",
+        "settled": false
+      }
+    },
+    {
+      "name": "boolean is not a receipt",
+      "input": {
+        "verdict": true,
+        "amount": "1",
+        "network": "eip155:84532",
+        "mode": "simulated",
+        "maxUsd": "1.00"
+      },
+      "expect": {
+        "decision": "DENY",
+        "reason": "receipt_required",
+        "settled": false
+      }
+    },
+    {
+      "name": "missing verdict",
+      "input": {
+        "amount": "1",
+        "network": "eip155:84532",
+        "mode": "simulated",
+        "maxUsd": "1.00"
+      },
+      "expect": {
+        "decision": "DENY",
+        "reason": "receipt_required",
+        "settled": false
+      }
+    },
+    {
+      "name": "unknown mode blocks",
+      "input": {
+        "verdict": "OK",
+        "amount": "1",
+        "network": "eip155:84532",
+        "mode": "mainnet",
+        "maxUsd": "1.00"
+      },
+      "expect": {
+        "decision": "DENY",
+        "reason": "unsupported_mode",
+        "settled": false
+      }
+    },
+    {
+      "name": "default mode is simulated release",
+      "input": {
+        "verdict": {
+          "format": "aox-verdict-receipt@1",
+          "provenance": "synthetic",
+          "contract": "text.upper@1",
+          "task_id": "task-ok-default",
+          "verdict": "OK",
+          "evidence": "present",
+          "reasons": [],
+          "hash": "2940d566d4c1e2cb20fda1b2fea478d35897bf8a20858f7a7a657d93c705a255"
+        },
+        "amount": "1",
+        "network": "eip155:84532",
+        "maxUsd": "1.00"
+      },
+      "expect": {
+        "decision": "RELEASE",
+        "simulated": true,
+        "mode": "simulated",
+        "settled": false,
+        "reason": "ok"
+      }
+    },
+    {
+      "name": "key in env blocks release",
+      "input": {
+        "verdict": {
+          "format": "aox-verdict-receipt@1",
+          "provenance": "synthetic",
+          "contract": "text.upper@1",
+          "task_id": "task-ok",
+          "verdict": "OK",
+          "evidence": "present",
+          "reasons": [],
+          "hash": "00a21508c0949fec4a10ffedea5e5d19433d1b208117c13408b960f6b5350dc0"
+        },
+        "amount": "1",
+        "network": "eip155:84532",
+        "mode": "simulated",
+        "maxUsd": "1.00",
+        "env": {
+          "PRIVATE_KEY": "not-a-key"
+        }
+      },
+      "expect": {
+        "decision": "DENY",
+        "reason": "private_key_refused",
+        "settled": false
+      },
+      "absent": "not-a-key"
+    },
+    {
+      "name": "pattern key blocks release",
+      "input": {
+        "verdict": {
+          "format": "aox-verdict-receipt@1",
+          "provenance": "synthetic",
+          "contract": "text.upper@1",
+          "task_id": "task-ok-cap",
+          "verdict": "OK",
+          "evidence": "present",
+          "reasons": [],
+          "hash": "86dbacad545f189f4d9e73546c2b7f3e9279da8dd35a3724635d9236bfc16b96"
+        },
+        "amount": "1",
+        "network": "eip155:84532",
+        "mode": "simulated",
+        "maxUsd": "1.00",
+        "env": {
+          "WALLET_SECRET": "1111111111111111111111111111111111111111111111111111111111111111"
+        }
+      },
+      "expect": {
+        "decision": "DENY",
+        "reason": "private_key_refused",
+        "settled": false
+      },
+      "absent": "1111111111111111111111111111111111111111111111111111111111111111"
+    },
+    {
+      "name": "testnet without payTo does not release",
+      "input": {
+        "verdict": {
+          "format": "aox-verdict-receipt@1",
+          "provenance": "synthetic",
+          "contract": "text.upper@1",
+          "task_id": "task-ok",
+          "verdict": "OK",
+          "evidence": "present",
+          "reasons": [],
+          "hash": "00a21508c0949fec4a10ffedea5e5d19433d1b208117c13408b960f6b5350dc0"
+        },
+        "amount": "1",
+        "network": "eip155:84532",
+        "mode": "x402_testnet",
+        "maxUsd": "1.00",
+        "env": {}
+      },
+      "expect": {
+        "decision": "DENY",
+        "reason": "config_not_ready",
+        "settled": false,
+        "liveSettlementAllowed": false
+      }
+    },
+    {
+      "name": "non allowlisted facilitator blocks release",
+      "input": {
+        "verdict": {
+          "format": "aox-verdict-receipt@1",
+          "provenance": "synthetic",
+          "contract": "text.upper@1",
+          "task_id": "task-ok",
+          "verdict": "OK",
+          "evidence": "present",
+          "reasons": [],
+          "hash": "00a21508c0949fec4a10ffedea5e5d19433d1b208117c13408b960f6b5350dc0"
+        },
+        "amount": "1",
+        "network": "eip155:84532",
+        "mode": "x402_testnet",
+        "maxUsd": "1.00",
+        "env": {
+          "AOX_PAYMENT_MODE": "x402_testnet",
+          "AOX_X402_NETWORK": "eip155:84532",
+          "AOX_X402_PAY_TO": "0x1111111111111111111111111111111111111111",
+          "AOX_X402_FACILITATOR_URL": "https://example.com/facilitator"
+        }
+      },
+      "expect": {
+        "decision": "DENY",
+        "reason": "facilitator_not_allowlisted",
+        "settled": false
+      }
+    },
+    {
+      "name": "testnet ready still does not settle",
+      "input": {
+        "verdict": {
+          "format": "aox-verdict-receipt@1",
+          "provenance": "synthetic",
+          "contract": "text.upper@1",
+          "task_id": "task-ok-ready",
+          "verdict": "OK",
+          "evidence": "present",
+          "reasons": [],
+          "hash": "74d6e0aba640db690224596e5bb4e724aefc005e49bfb7cc964031fd39ef8a20"
+        },
+        "amount": "1",
+        "network": "eip155:84532",
+        "mode": "x402_testnet",
+        "maxUsd": "1.00",
+        "env": {
+          "AOX_PAYMENT_MODE": "x402_testnet",
+          "AOX_X402_NETWORK": "eip155:84532",
+          "AOX_X402_PAY_TO": "0x1111111111111111111111111111111111111111"
+        }
+      },
+      "expect": {
+        "decision": "RELEASE",
+        "settled": false,
+        "liveSettlementAllowed": false,
+        "simulated": false,
+        "reason": "ok",
+        "receiptHash": "74d6e0aba640db690224596e5bb4e724aefc005e49bfb7cc964031fd39ef8a20",
+        "taskId": "task-ok-ready"
+      }
+    }
+  ]
+}

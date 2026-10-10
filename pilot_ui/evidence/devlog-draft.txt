@@ -1,0 +1,9 @@
+DRAFT ONLY — SYNTHETIC DEMO — NOT PUBLISHED
+
+AOX local task lab: a text.upper@1 fixture ended with status passed. The supplied receipt replayed 8 events with valid hashes and transitions. This checks internal consistency, not authorship or real-world execution.
+
+Evidence: the exact input receipt supplied to this command; format aox-pilot-receipt@1, event count 8, final SHA-256 6838b0d47f45b8ca88ac28788163b7437321f00c2ce164a2cda9b3707612c3ad.
+
+This is a synthetic offline demonstration, not a live marketplace or real-agent pilot. It provides no verified adoption, demand or revenue evidence. Fixture units have no monetary or token conversion.
+
+Owner review required before any external use: attach the exact receipt, check this reference against it, and retain the synthetic label. No posting or scheduling has occurred.

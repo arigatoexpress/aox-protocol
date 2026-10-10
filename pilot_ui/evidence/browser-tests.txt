@@ -1,0 +1,1 @@
+PASS: desktop/mobile, fixture success/rejection/no-match, literal script text, export/import, tampered import, keyboard focus, no horizontal overflow, no browser errors; review regressions for falsy delivered output, failure/expiry verdicts and quote-time candidates.

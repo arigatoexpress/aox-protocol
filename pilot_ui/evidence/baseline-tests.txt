@@ -1,0 +1,42 @@
+test_demo_passes_every_job_and_stops (test_outcome_loop.OutcomeLoopTest.test_demo_passes_every_job_and_stops) ... ok
+test_forbidden_flag_rejects_only_that_job (test_outcome_loop.OutcomeLoopTest.test_forbidden_flag_rejects_only_that_job) ... ok
+test_name_present_still_does_not_send (test_outcome_loop.OutcomeLoopTest.test_name_present_still_does_not_send) ... ok
+test_paid_brief_with_no_source_is_not_billed (test_outcome_loop.OutcomeLoopTest.test_paid_brief_with_no_source_is_not_billed) ... ok
+test_256_mixed_synthetic_traces_against_accounting_oracle (test_reliability.ReliabilityTests.test_256_mixed_synthetic_traces_against_accounting_oracle) ... ok
+test_every_accepted_nesting_boundary_replays (test_reliability.ReliabilityTests.test_every_accepted_nesting_boundary_replays) ... ok
+test_interleaved_requests_share_funds_and_global_clock (test_reliability.ReliabilityTests.test_interleaved_requests_share_funds_and_global_clock) ... ok
+test_malformed_ledger_primitives_and_deep_json (test_reliability.ReliabilityTests.test_malformed_ledger_primitives_and_deep_json) ... ok
+test_reject_lossy_non_json_types (test_reliability.ReliabilityTests.test_reject_lossy_non_json_types) ... ok
+test_replay_bad_keyword_data_is_value_error (test_reliability.ReliabilityTests.test_replay_bad_keyword_data_is_value_error) ... ok
+test_state_and_event_snapshots_cannot_change_ledger (test_reliability.ReliabilityTests.test_state_and_event_snapshots_cannot_change_ledger) ... ok
+test_correct_unicode_expansion_passes (test_simulator.LoopTests.test_correct_unicode_expansion_passes) ... ok
+test_credit_conservation_at_every_step (test_simulator.LoopTests.test_credit_conservation_at_every_step) ... ok
+test_deadline_and_backwards_time_rejected (test_simulator.LoopTests.test_deadline_and_backwards_time_rejected) ... ok
+test_deterministic_price_then_id_match (test_simulator.LoopTests.test_deterministic_price_then_id_match) ... ok
+test_duplicate_accept_rejected_without_second_debit (test_simulator.LoopTests.test_duplicate_accept_rejected_without_second_debit) ... ok
+test_duplicate_settlement_is_atomic (test_simulator.LoopTests.test_duplicate_settlement_is_atomic) ... ok
+test_expired_quote (test_simulator.LoopTests.test_expired_quote) ... ok
+test_expiry_refunds_delayed_or_missing_delivery_once (test_simulator.LoopTests.test_expiry_refunds_delayed_or_missing_delivery_once) ... ok
+test_failure_refunds (test_simulator.LoopTests.test_failure_refunds) ... ok
+test_fixture_failure_records_refund (test_simulator.LoopTests.test_fixture_failure_records_refund) ... ok
+test_hash_recomputed_does_not_bypass_state_machine (test_simulator.LoopTests.test_hash_recomputed_does_not_bypass_state_machine) ... ok
+test_instruction_is_only_data (test_simulator.LoopTests.test_instruction_is_only_data) ... ok
+test_insufficient_funds (test_simulator.LoopTests.test_insufficient_funds) ... ok
+test_invalid_output_refunds (test_simulator.LoopTests.test_invalid_output_refunds) ... ok
+test_late_delivery_and_early_expiry_are_atomic (test_simulator.LoopTests.test_late_delivery_and_early_expiry_are_atomic) ... ok
+test_late_execution_does_not_call_fixture (test_simulator.LoopTests.test_late_execution_does_not_call_fixture) ... ok
+test_late_settlement_must_refund_via_expiry (test_simulator.LoopTests.test_late_settlement_must_refund_via_expiry) ... ok
+test_malformed_identifiers_raise_value_error (test_simulator.LoopTests.test_malformed_identifiers_raise_value_error) ... ok
+test_negative_and_boolean_prices_rejected (test_simulator.LoopTests.test_negative_and_boolean_prices_rejected) ... ok
+test_no_match (test_simulator.LoopTests.test_no_match) ... ok
+test_no_self_match (test_simulator.LoopTests.test_no_self_match) ... ok
+test_non_json_fixture_output_records_refund (test_simulator.LoopTests.test_non_json_fixture_output_records_refund) ... ok
+test_pass_and_replay (test_simulator.LoopTests.test_pass_and_replay) ... ok
+test_reordered_or_duplicate_events_rejected (test_simulator.LoopTests.test_reordered_or_duplicate_events_rejected) ... ok
+test_tampering_detected (test_simulator.LoopTests.test_tampering_detected) ... ok
+test_unknown_contract_and_invalid_schema (test_simulator.LoopTests.test_unknown_contract_and_invalid_schema) ... ok
+
+----------------------------------------------------------------------
+Ran 37 tests in 0.620s
+
+OK

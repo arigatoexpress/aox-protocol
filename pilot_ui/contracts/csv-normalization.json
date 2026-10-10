@@ -1,0 +1,134 @@
+{
+  "version": "1.0.0",
+  "status": "local_deterministic_tool",
+  "provenance": "synthetic_sample_or_local_input_self_declared",
+  "executable_in_demo": true,
+  "risk_class": "r0_pure",
+  "allowed_tools": [],
+  "network": "none",
+  "max_runtime_s": 30,
+  "external_mappings": {},
+  "qualification_suite_ref": "pilot_ui/tests/csv/core.test.mjs",
+  "contract_id": "data.csv.normalize",
+  "title": "Schema-bound CSV normalization",
+  "capability_id": "data.csv.normalize@1",
+  "outcome_definition": "Accept local CSV normalization only when closed-schema checks and a separate parser agree on every row and canonical output. This is actual local computation, not agent or marketplace execution.",
+  "input_schema": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "csv_text",
+      "columns"
+    ],
+    "properties": {
+      "csv_text": {
+        "type": "string",
+        "maxLength": 32768,
+        "minLength": 1
+      },
+      "columns": {
+        "const": [
+          "item_id",
+          "quantity"
+        ]
+      }
+    }
+  },
+  "output_schema": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "rows",
+      "normalized_csv"
+    ],
+    "properties": {
+      "rows": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "item_id",
+            "quantity"
+          ],
+          "properties": {
+            "item_id": {
+              "type": "string",
+              "pattern": "^[A-Z0-9_][A-Z0-9_-]{0,31}$"
+            },
+            "quantity": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000000
+            }
+          }
+        },
+        "minItems": 1,
+        "maxItems": 100
+      },
+      "normalized_csv": {
+        "type": "string",
+        "maxLength": 32768,
+        "minLength": 1
+      }
+    }
+  },
+  "acceptance_checks": [
+    {
+      "kind": "schema",
+      "spec": "Closed input/output schemas; valid UTF-8, 1\u201332768 input bytes, 1\u2013100 data rows. Reject BOM and invalid Unicode; file bytes are retained until the user edits text."
+    },
+    {
+      "kind": "assertion",
+      "spec": "Parse comma-delimited CSV with double-quote escaping. Accept LF or CRLF input; reject BOM, duplicate/missing/extra headers, blank rows, ragged rows and malformed quoting. Header must be exactly item_id,quantity in that order."
+    },
+    {
+      "kind": "reference_diff",
+      "spec": "Trim ASCII spaces from each cell. Require ASCII item_id matching [A-Za-z0-9_][A-Za-z0-9_-]{0,31}, then uppercase. Leading hyphen and formula-like prefixes are rejected. Reject duplicate normalized IDs. Quantity must match [0-9]{1,7} and be <=1000000; output integer removes leading zeros. Preserve row order; embedded newlines, quotes and non-ASCII characters in cells fail the field schema."
+    },
+    {
+      "kind": "reference_diff",
+      "spec": "normalized_csv must equal header item_id,quantity followed by LF, one normalized ID and base-10 quantity row per input row, comma-separated, final LF. No formula interpretation, URL fetch or silent row dropping."
+    },
+    {
+      "kind": "reference_diff",
+      "spec": "Independently parse the original source with a separate grammar implementation and recompute expected rows/output. Check SHA-256 of exact UTF-8 input and canonical CSV. Digests establish byte consistency only, not trusted provenance; a full consistent replacement receipt can pass."
+    }
+  ],
+  "synthetic_example": {
+    "input": {
+      "csv_text": "item_id,quantity\n bolt_a ,007\nNUT_B,2\n",
+      "columns": [
+        "item_id",
+        "quantity"
+      ]
+    },
+    "expected_output": {
+      "rows": [
+        {
+          "item_id": "BOLT_A",
+          "quantity": 7
+        },
+        {
+          "item_id": "NUT_B",
+          "quantity": 2
+        }
+      ],
+      "normalized_csv": "item_id,quantity\nBOLT_A,7\nNUT_B,2\n"
+    }
+  },
+  "qualification_cases": [
+    "Quoted cells and CRLF produce identical canonical output.",
+    "Missing/extra/duplicate headers, duplicate normalized IDs and malformed quotes reject.",
+    "Formula-like IDs, negative/fractional/overflow quantities and oversized input reject.",
+    "Payload containing instructions is data, never executed."
+  ],
+  "readiness_gates": [
+    "Local producer, independent verifier and synthetic qualification tests are implemented; user input runs in browser memory with no upload or automatic storage.",
+    "Spreadsheet import can coerce numeric-looking IDs: import item_id as text. Formula prefixes are rejected by the schema.",
+    "No exchange-value claim: compare operator effort and quality with direct task handling before any agent pilot.",
+    "Real providers, isolated execution, independently authenticated receipts and recurring-demand evidence remain unimplemented."
+  ],
+  "execution": "browser_worker_no_network",
+  "max_input_bytes": 32768
+}

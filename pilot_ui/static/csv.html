@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AOX · Local CSV normalization</title>
+<link rel="stylesheet" href="/style.css"><link rel="stylesheet" href="/csv.css">
+<script type="module" src="/csv-ui.mjs"></script>
+</head>
+<body>
+<header><a class="brand" href="/"><span class="mark">a+</span> AOX <span class="muted">/ local tools</span></a><span class="badge">LOCAL TRANSFORMATION</span></header>
+<main>
+<section class="intro"><p class="eyebrow">DATA.CSV.NORMALIZE@1</p><h1>Clean rows.<br>Check every result.</h1><p class="lede">Normalize an inventory CSV and verify it with a second parser before downloading. Your data stays in this browser tab.</p><div class="truth"><strong>Actual local computation</strong><span>No agents, marketplace, accounting or network processing. This is separate from the <a href="/">synthetic exchange demo</a>.</span></div></section>
+<div class="workspace">
+<section class="panel">
+<h2>1. Choose your CSV</h2>
+<p class="muted">Exact header: <code>item_id,quantity</code>. Up to 32 KiB of UTF-8 and 100 data rows.</p>
+<label for="csv-file">Open a CSV file locally</label><input id="csv-file" type="file" accept=".csv,text/csv">
+<label for="csv-input">Or paste CSV text</label><textarea id="csv-input" rows="9" maxlength="32768" spellcheck="false" aria-describedby="csv-rules"></textarea>
+<p id="source-label" class="hint">Synthetic sample selected.</p>
+<p id="csv-rules" class="hint">IDs: ASCII letters, digits, underscore and hyphen; no leading hyphen. Quantities: integers 0–1,000,000. Trims ASCII spaces, uppercases IDs, removes quantity leading zeros. LF/CRLF and quoted cells supported. Duplicate IDs, blank rows, Unicode IDs, embedded field newlines and formula-like values are rejected.</p>
+<div class="csv-actions"><button id="csv-run" type="button">Normalize &amp; verify</button><button id="csv-cancel" type="button" class="secondary" disabled>Cancel</button></div>
+<div class="csv-actions"><button id="csv-sample" type="button" class="secondary">Load synthetic sample</button><button id="csv-clear" type="button" class="secondary">Clear data</button></div>
+</section>
+<section class="panel">
+<h2>2. Inspect the local result</h2>
+<p id="csv-status" role="status" aria-live="polite">Ready. Nothing has been sent or saved.</p>
+<div id="csv-result" hidden>
+<span class="badge" id="csv-result-label">LOCAL RESULT</span>
+<p id="csv-checks"></p>
+<div class="csv-table-wrap"><table><caption>Verified normalized rows</caption><thead><tr><th scope="col">item_id</th><th scope="col">quantity</th></tr></thead><tbody id="csv-rows"></tbody></table></div>
+<p class="hint">Export contains only constrained IDs and integer quantities: no formula prefixes. Spreadsheet apps may still coerce numeric-looking IDs; import item_id as text to preserve formatting.</p>
+<div class="csv-actions"><button id="csv-download" type="button">Download normalized CSV</button><button id="csv-receipt" type="button" class="secondary">Download receipt</button></div>
+<p class="hint">Downloads are explicit local files. The receipt includes the full source CSV and output; share it only if you intend to share that data.</p>
+<details><summary>Verification and receipt limits</summary><p>A separate parser recomputes rows and canonical output from the source. SHA-256 checks exact input and output bytes. These checks establish internal consistency, not authorship, execution history, trusted provenance or demand. A fully recomputed replacement receipt can pass. Source labels are self-declared.</p><pre id="csv-digests"></pre></details>
+</div>
+</section>
+</div>
+<section class="panel history"><h2>3. Recheck a local receipt</h2><p class="muted">Recompute a downloaded CSV receipt independently. No exchange ledger is involved, and nothing is added to fixture history.</p><label for="csv-import">Open a CSV receipt JSON (up to 256 KiB)</label><input id="csv-import" type="file" accept=".json,application/json"></section>
+<footer>AOX / useful local work <span>No automatic storage, telemetry, remote execution or live-market claims.</span></footer>
+</main>
+</body></html>

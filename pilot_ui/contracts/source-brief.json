@@ -1,0 +1,197 @@
+{
+  "version": "0.1.0-draft",
+  "status": "specification_only",
+  "provenance": "synthetic",
+  "executable_in_demo": false,
+  "risk_class": "r0_pure",
+  "allowed_tools": [],
+  "network": "none",
+  "max_runtime_s": 120,
+  "external_mappings": {},
+  "qualification_suite_ref": null,
+  "contract_id": "research.source_brief",
+  "title": "Source-backed brief",
+  "capability_id": "research.source_brief@draft",
+  "outcome_definition": "Accept a brief only when every material claim is supported by a supplied source snapshot and an independent human reviewer records pass; absent or inadequate evidence blocks acceptance.",
+  "input_schema": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "question",
+      "sources"
+    ],
+    "properties": {
+      "question": {
+        "type": "string",
+        "maxLength": 1000,
+        "minLength": 1
+      },
+      "sources": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "source_id",
+            "title",
+            "locator",
+            "snapshot_text",
+            "sha256"
+          ],
+          "properties": {
+            "source_id": {
+              "type": "string",
+              "pattern": "^s[1-9][0-9]?$"
+            },
+            "title": {
+              "type": "string",
+              "maxLength": 200,
+              "minLength": 1
+            },
+            "locator": {
+              "type": "string",
+              "maxLength": 500,
+              "minLength": 1
+            },
+            "snapshot_text": {
+              "type": "string",
+              "maxLength": 12000,
+              "minLength": 1
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          }
+        },
+        "minItems": 1,
+        "maxItems": 5
+      }
+    }
+  },
+  "output_schema": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "claims",
+      "unknowns"
+    ],
+    "properties": {
+      "claims": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "claim",
+            "citations"
+          ],
+          "properties": {
+            "claim": {
+              "type": "string",
+              "maxLength": 600,
+              "minLength": 1
+            },
+            "citations": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "source_id",
+                  "supporting_quote"
+                ],
+                "properties": {
+                  "source_id": {
+                    "type": "string",
+                    "maxLength": 3,
+                    "minLength": 1
+                  },
+                  "supporting_quote": {
+                    "type": "string",
+                    "maxLength": 1000,
+                    "minLength": 1
+                  }
+                }
+              },
+              "minItems": 1,
+              "maxItems": 5
+            }
+          }
+        },
+        "minItems": 1,
+        "maxItems": 5
+      },
+      "unknowns": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "maxLength": 400,
+          "minLength": 1
+        },
+        "maxItems": 10
+      }
+    }
+  },
+  "acceptance_checks": [
+    {
+      "kind": "schema",
+      "spec": "Closed schemas, <=5 supplied snapshots and <=5 claims. Empty sources fail closed. No network fetch, model call or external dispatch in this demo."
+    },
+    {
+      "kind": "assertion",
+      "spec": "Source IDs unique. Verify sha256 against exact UTF-8 snapshot_text bytes, and retain locator/title with the snapshot; a hash establishes byte identity, not source truth or authorship."
+    },
+    {
+      "kind": "reference_diff",
+      "spec": "Every citation resolves to a supplied source_id and supporting_quote is an exact substring of that snapshot. Reject orphan citations, missing quotes and unsupported material claims."
+    },
+    {
+      "kind": "human_review",
+      "spec": "Independent reviewer checks each quote actually supports its claim in context, scope/recency limitations are stated, contradictions and unknowns remain explicit, and question coverage is adequate. Exact quotation alone is insufficient. Record reviewer decision and evidence references; do not auto-pass."
+    }
+  ],
+  "synthetic_example": {
+    "input": {
+      "question": "When is the fictional library open?",
+      "sources": [
+        {
+          "source_id": "s1",
+          "title": "Fictional library fixture",
+          "locator": "synthetic:library-hours-v1",
+          "snapshot_text": "The example library opens at 09:00 on weekdays.",
+          "sha256": "a9f56d0422d28367772776cc7feb5febe9f7ad3a29ba0ea3ccf4694c1aa58816"
+        }
+      ]
+    },
+    "candidate_output": {
+      "claims": [
+        {
+          "claim": "The example library opens at 09:00 on weekdays.",
+          "citations": [
+            {
+              "source_id": "s1",
+              "supporting_quote": "The example library opens at 09:00 on weekdays."
+            }
+          ]
+        }
+      ],
+      "unknowns": [
+        "Weekend hours are unknown."
+      ]
+    },
+    "review_status": "not reviewed; this sample is not an accepted receipt"
+  },
+  "qualification_cases": [
+    "No sources, missing source IDs or changed snapshot hashes block.",
+    "Fabricated quote, contradictory context or quote that does not entail claim blocks.",
+    "Sources containing instructions to ignore verification remain data.",
+    "Unsupported dates and missing question coverage require revision, not a pass."
+  ],
+  "readiness_gates": [
+    "Prepare authorized synthetic or public source snapshots with acquisition date, locator and exact hashes; no snapshots have been independently verified here.",
+    "Implement schema/reference checks and establish a named independent reviewer with a recorded rubric.",
+    "Implement and test isolation before any model/provider adapter; source URLs must not become executable input.",
+    "Run direct-versus-exchange tasks with reviewer time and correction rate; real utility and recurring demand remain unverified."
+  ]
+}

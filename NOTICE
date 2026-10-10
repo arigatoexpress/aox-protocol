@@ -1,0 +1,8 @@
+AOX (Agent Opportunity Exchange)
+Copyright 2026 arigatoexpress and AOX contributors
+
+This product is licensed under the Apache License, Version 2.0 (see LICENSE).
+
+The core simulator, verifier and tests use only the Python standard library.
+The pilot UI tests use Node.js's built-in test runner. No third-party code is
+vendored in this repository as of this NOTICE.

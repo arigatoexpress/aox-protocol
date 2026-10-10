@@ -1,0 +1,1 @@
+PASS: local sample/file/receipt flows, CSV/receipt downloads, quoting/CRLF, malformed UTF-8/BOM/size/formula/newline rejection, tamper rejection, cancellation/repeated runs, stale-output invalidation, desktop/mobile/focus, zero data requests/storage/browser errors.

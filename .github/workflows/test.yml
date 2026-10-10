@@ -1,0 +1,42 @@
+name: Offline fixture tests
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  offline:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: Install optional live-settlement packages
+        run: npm ci --ignore-scripts
+      - name: Test standard-library fixture
+        run: python3 -m unittest discover -s tests -v
+      - name: Test pilot UI and receipt-to-draft pipeline
+        run: python3 -m unittest discover -s pilot_ui/tests -v
+      - name: Test CSV core and independent verifier
+        run: node --test pilot_ui/tests/csv/*.test.mjs
+      - name: Test vendored x402 rail policy
+        run: node --test payments/x402-testnet.test.mjs
+      - name: Test opt-in Base Sepolia settlement bindings
+        run: node --test payments/x402-live.test.mjs
+      - name: Verify reproducible synthetic devlog draft
+        run: |
+          python3 -m pilot_ui.draft_devlog pilot_ui/evidence/synthetic-pass.json > /tmp/aox-devlog-draft.txt
+          cmp pilot_ui/evidence/devlog-draft.txt /tmp/aox-devlog-draft.txt
+      - name: Verify deterministic demo
+        run: |
+          python3 simulator.py > /tmp/fixture-first.json
+          python3 simulator.py > /tmp/fixture-second.json
+          cmp /tmp/fixture-first.json /tmp/fixture-second.json
+      - name: Verify deterministic World's Fair demo
+        run: |
+          python3 demo.py > /tmp/aox-demo-first.txt
+          python3 demo.py > /tmp/aox-demo-second.txt
+          cmp /tmp/aox-demo-first.txt /tmp/aox-demo-second.txt

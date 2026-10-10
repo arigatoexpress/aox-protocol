@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 248 88" role="img" aria-labelledby="title desc">
+  <title id="title">AOX</title>
+  <desc id="desc">AOX wordmark</desc>
+  <g fill="none" stroke="#161616" stroke-width="7" stroke-linecap="square" stroke-linejoin="miter">
+    <path d="M20 70 L52 16 L84 70"/>
+    <path d="M33 50 H71"/>
+    <circle cx="124" cy="44" r="26"/>
+    <path d="M168 18 L228 70"/>
+    <path d="M228 18 L168 70"/>
+  </g>
+  <path d="M20 80 H228" stroke="#161616" stroke-width="2" fill="none"/>
+</svg>

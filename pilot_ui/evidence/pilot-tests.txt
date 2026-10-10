@@ -1,0 +1,18 @@
+test_draft_cites_replayed_evidence_without_payload (test_app.DraftTests.test_draft_cites_replayed_evidence_without_payload) ... ok
+test_tampered_receipt_cannot_generate_draft (test_app.DraftTests.test_tampered_receipt_cannot_generate_draft) ... ok
+test_foreign_origin_invalid_import_and_limits (test_app.HttpTests.test_foreign_origin_invalid_import_and_limits) ... ok
+test_history_is_bounded (test_app.HttpTests.test_history_is_bounded) ... ok
+test_run_replay_history_and_static_routes (test_app.HttpTests.test_run_replay_history_and_static_routes) ... ok
+test_import_does_not_trust_summary (test_app.ReceiptTests.test_import_does_not_trust_summary) ... ok
+test_invalid_requests_fail_closed (test_app.ReceiptTests.test_invalid_requests_fail_closed) ... ok
+test_pass_unicode_tie_break_and_round_trip (test_app.ReceiptTests.test_pass_unicode_tie_break_and_round_trip) ... ok
+test_rejection_and_no_match (test_app.ReceiptTests.test_rejection_and_no_match) ... ok
+test_tampered_and_truncated_receipts_rejected (test_app.ReceiptTests.test_tampered_and_truncated_receipts_rejected) ... ok
+test_candidates_are_from_quote_time (test_app.ReviewRegressionTests.test_candidates_are_from_quote_time) ... ok
+test_falsy_deliveries_survive_import_without_inferred_verdict (test_app.ReviewRegressionTests.test_falsy_deliveries_survive_import_without_inferred_verdict) ... ok
+test_partial_http_body_times_out_and_server_recovers (test_app.ReviewRegressionTests.test_partial_http_body_times_out_and_server_recovers) ... ok
+
+----------------------------------------------------------------------
+Ran 13 tests in 1.280s
+
+OK

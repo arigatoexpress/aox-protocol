@@ -1,0 +1,28 @@
+{
+  "format": "aox-local-csv-receipt@1",
+  "contract": "data.csv.normalize@1",
+  "kind": "local_transform",
+  "source_kind": "synthetic_sample",
+  "input": {
+    "csv_text": "item_id,quantity\n bolt_a ,007\nNUT_B,2\n",
+    "columns": [
+      "item_id",
+      "quantity"
+    ]
+  },
+  "output": {
+    "rows": [
+      {
+        "item_id": "BOLT_A",
+        "quantity": 7
+      },
+      {
+        "item_id": "NUT_B",
+        "quantity": 2
+      }
+    ],
+    "normalized_csv": "item_id,quantity\nBOLT_A,7\nNUT_B,2\n"
+  },
+  "input_sha256": "7cade996e3b77588ce9b6752c662075e2d242ca883ad9be410084e77ed1f6504",
+  "output_sha256": "ee3e719491d8f3b1ce871c6f6971ec225c5ea6e9a5f3762040065faf2acd7f47"
+}

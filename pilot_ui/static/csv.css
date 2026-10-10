@@ -1,0 +1,7 @@
+.csv-actions {display:flex; flex-wrap:wrap; gap:10px; margin-top:18px}
+.csv-table-wrap {max-height:340px; overflow:auto; margin-top:18px}
+table {border-collapse:collapse; width:100%; text-align:left}
+caption {text-align:left; font-weight:600; padding-bottom:10px}
+th, td {padding:8px; border-bottom:1px solid var(--line); overflow-wrap:anywhere}
+#csv-input {font:14px/1.6 ui-monospace,monospace}
+#csv-status {overflow-wrap:anywhere}

@@ -1,0 +1,14 @@
+✔ canonical sample and quoted CRLF round trip (9.683957ms)
+✔ strict structural, quoting, Unicode and formula rejection (1.278322ms)
+✔ closed input schema and byte/row limits (0.884056ms)
+✔ independent recomputation rejects tampered receipts even with updated hashes (5.406021ms)
+✔ deterministic normalization and reference agree across generated samples (3.599009ms)
+✔ exact byte boundary and adversarial parser agreement (32.883981ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 113.365193

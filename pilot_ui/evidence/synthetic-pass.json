@@ -1,0 +1,104 @@
+{
+  "format": "aox-pilot-receipt@1",
+  "provenance": "synthetic",
+  "ledger": [
+    {
+      "sequence": 0,
+      "previous": "0000000000000000000000000000000000000000000000000000000000000000",
+      "kind": "seed",
+      "data": {
+        "balances": {
+          "requester": 100,
+          "fixture-alpha": 0,
+          "fixture-beta": 0
+        }
+      },
+      "hash": "1452ee79e39e0e870e830243219c251934833137a8398bb48e98c161e457f356"
+    },
+    {
+      "sequence": 1,
+      "previous": "1452ee79e39e0e870e830243219c251934833137a8398bb48e98c161e457f356",
+      "kind": "offer",
+      "data": {
+        "provider": "fixture-alpha",
+        "price": 10,
+        "contract": "text.upper@1"
+      },
+      "hash": "5fb0d07b5a3a103aa83719d8fe25e191b37438ce1a89bc29c420a47fe70a23e7"
+    },
+    {
+      "sequence": 2,
+      "previous": "5fb0d07b5a3a103aa83719d8fe25e191b37438ce1a89bc29c420a47fe70a23e7",
+      "kind": "offer",
+      "data": {
+        "provider": "fixture-beta",
+        "price": 15,
+        "contract": "text.upper@1"
+      },
+      "hash": "12f2d19d869e4f15ce8bf29d400fdf9f76a56611a75ea8b1ccd57c2a2e6a4c28"
+    },
+    {
+      "sequence": 3,
+      "previous": "12f2d19d869e4f15ce8bf29d400fdf9f76a56611a75ea8b1ccd57c2a2e6a4c28",
+      "kind": "post",
+      "data": {
+        "request": "local-task",
+        "requester": "requester",
+        "contract": "text.upper@1",
+        "payload": {
+          "text": "Straße <script>window.INJECTED = true</script>"
+        },
+        "budget": 20,
+        "deadline": 100
+      },
+      "hash": "68f517ee8f717e660e3d8045aca24fd274f65cf85695a88e43e3f3a50dfba7fd"
+    },
+    {
+      "sequence": 4,
+      "previous": "68f517ee8f717e660e3d8045aca24fd274f65cf85695a88e43e3f3a50dfba7fd",
+      "kind": "quote",
+      "data": {
+        "request": "local-task",
+        "now": 0
+      },
+      "hash": "a467481b6f1a87a812e2fd02421faeb614d071fdb6816c3f3b13f94681470b44"
+    },
+    {
+      "sequence": 5,
+      "previous": "a467481b6f1a87a812e2fd02421faeb614d071fdb6816c3f3b13f94681470b44",
+      "kind": "accept",
+      "data": {
+        "request": "local-task",
+        "now": 1
+      },
+      "hash": "1b77d728a25d4f172c064e74e3361c494b9cf11aec15a0fb4f1a408baa2f243b"
+    },
+    {
+      "sequence": 6,
+      "previous": "1b77d728a25d4f172c064e74e3361c494b9cf11aec15a0fb4f1a408baa2f243b",
+      "kind": "deliver",
+      "data": {
+        "request": "local-task",
+        "output": {
+          "text": "STRASSE <SCRIPT>WINDOW.INJECTED = TRUE</SCRIPT>"
+        },
+        "now": 2
+      },
+      "hash": "1c0e289e77239ab9d16b02274d742dfaf34dd090ac8168c70dec25b17c4b425a"
+    },
+    {
+      "sequence": 7,
+      "previous": "1c0e289e77239ab9d16b02274d742dfaf34dd090ac8168c70dec25b17c4b425a",
+      "kind": "settle",
+      "data": {
+        "request": "local-task",
+        "now": 3
+      },
+      "hash": "6838b0d47f45b8ca88ac28788163b7437321f00c2ce164a2cda9b3707612c3ad"
+    }
+  ],
+  "checkpoint": {
+    "event_count": 8,
+    "final_hash": "6838b0d47f45b8ca88ac28788163b7437321f00c2ce164a2cda9b3707612c3ad"
+  }
+}
